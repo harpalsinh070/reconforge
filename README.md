@@ -37,23 +37,32 @@ After installation, the following commands work out-of-the-box:
 # Display help menu and command options
 reconforge --help
 
-# Display version information
-reconforge --version
-
-# Verify external tooling readiness (Nmap, Subfinder, Nuclei)
+# Verify external tooling readiness (Python, Nmap, Subfinder, Nuclei)
 reconforge --check
 
-# Standard full reconnaissance scan
+# Standard reconnaissance scan (target domain or host)
 reconforge scan -d example.com
 
-# Passive OSINT reconnaissance (zero direct traffic to target hosts)
+# Target a specific URL (preserves scheme, port, and path)
+reconforge scan -u https://example.com:8443/app
+
+# Inspect HTTP security headers (HSTS, CSP, X-Frame-Options, etc.)
+reconforge scan -u https://example.com --headers
+
+# Inspect TLS certificate expiration and cryptographic parameters independently
+reconforge scan -u https://example.com --tls
+
+# Comprehensive assessment (runs all modules: passive, DNS, ports, headers, TLS, directories, nuclei)
+reconforge scan -u https://example.com --all
+
+# Machine-readable output (clean, uncorrupted JSON strictly to stdout)
+reconforge scan -u https://example.com --headers --json
+
+# Passive OSINT reconnaissance only (zero direct traffic to target hosts)
 reconforge scan -d example.com --passive
 
-# High-speed quick triage scan (top 20 network ports)
+# High-speed quick triage scan
 reconforge scan -d example.com --quick
-
-# Discover and list subdomains for a target
-reconforge subdomains -d example.com
 
 # Launch interactive assessment console
 reconforge console
@@ -68,8 +77,8 @@ reconforge console
 Clone the repository and build the Debian package using the builder script:
 
 ```bash
-git clone https://github.com/reconforge/reconforge.git
-cd reconforge
+git clone https://github.com/harpalsinh070/reconxforge.git
+cd reconxforge
 
 # 1. Compile the Debian package (.deb)
 bash ./build_deb.sh
@@ -97,10 +106,10 @@ For centralized deployment across fleets or CI/CD runners, configure the signed 
 ```bash
 # 1. Download and install repository signing key into system keyrings
 sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://<YOUR_GITHUB_USERNAME>.github.io/reconforge/reconforge.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/reconforge-archive-keyring.gpg
+curl -fsSL https://harpalsinh070.github.io/reconxforge/reconforge.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/reconforge-archive-keyring.gpg
 
 # 2. Add authenticated repository source entry
-echo "deb [signed-by=/etc/apt/keyrings/reconforge-archive-keyring.gpg] https://<YOUR_GITHUB_USERNAME>.github.io/reconforge stable main" | sudo tee /etc/apt/sources.list.d/reconforge.list
+echo "deb [signed-by=/etc/apt/keyrings/reconforge-archive-keyring.gpg] https://harpalsinh070.github.io/reconxforge stable main" | sudo tee /etc/apt/sources.list.d/reconforge.list
 
 # 3. Update database and install native package
 sudo apt update
